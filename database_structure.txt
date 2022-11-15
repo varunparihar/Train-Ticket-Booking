@@ -1,0 +1,95 @@
+CREATE DATABASE railway;
+USE railway;
+CREATE TABLE SEARCH(
+    from_code VARCHAR (10) not null,
+    to_code VARCHAR (10)  not null,
+    d_date date not null
+);
+CREATE TABLE STATION(
+    station_code VARCHAR (10),
+    train_no VARCHAR (10),
+    arrival_t VARCHAR (10),
+    departure_t VARCHAR (10)
+);
+INSERT INTO STATION VALUES 
+    ('CNB','12303','08:00','08:10'),
+    ('CNB','12381','08:15','08:20'),
+    ('CNB','12184','19:10','19:20'),
+    ('CNB','22538','00:35','00:50'),
+    ('CNB','12108','20:40','20:50'),
+    ('CNB','14006','18:00','18:10'),
+
+    ('DHN','12417','08:00','08:10'),
+    ('DHN','12381','18:15','18:20'),
+    ('DHN','12184','09:10','09:20'),
+    ('DHN','22548','00:35','00:50'),
+    ('DHN','12168','20:40','20:50'),
+    ('DHN','14006','05:05','05:05'),
+
+    ('PNBE','12487','08:00','08:10'),
+    ('PNBE','12381','12:15','12:20'),
+    ('PNBE','12184','05:10','05:20'),
+    ('PNBE','20548','00:35','00:50'),
+    ('PNBE','12068','20:40','20:50'),
+    ('PNBE','14006','01:05','01:05')
+;
+CREATE TABLE AVAILABLE(
+    train_no VARCHAR (10),
+    week_day VARCHAR (10),
+    2S INTEGER,
+    SL INTEGER,
+    3AC INTEGER,
+    2AC INTEGER,
+    1AC INTEGER
+);
+INSERT INTO AVAILABLE VALUES
+    ('12068','02456',120,100,80,70,60),
+    ('12381','0236',120,100,80,70,60),
+    ('12184','14500,80,70,60),
+    ('14006','024',120,100,80,70,60),
+    ('12417','01234',120,100,80,70,60)
+    ;
+CREATE TABLE USER(
+    user_name VARCHAR (20) not null,
+    user_id VARCHAR (20) not null,
+    user_password VARCHAR (20) not null,
+    age INTEGER,
+    dob date,
+    gender VARCHAR(10),
+    phone_no VARCHAR(10) not null
+);
+INSERT INTO USER VALUES 
+    ('A','IR12','IR12',19,'2003-12-21','M','0023332123'),
+    ('B','IR13','IR13',29,'1993-12-21','M','0023332133'),
+    ('C','IR14','IR14',39,'1983-12-21','M','0023332143')
+    ;
+CREATE TABLE TICKET(
+    pnr VARCHAR (10) not null,
+    from_code VARCHAR (10) not null,
+    to_code VARCHAR (10) not null,
+    d_date date not null,
+    passenger_name VARCHAR (20),
+    seat_no INTEGER,
+    coach_no INTEGER,
+    berth_no VARCHAR (5)
+);
+
+-- experiment start
+create table STATION_NAME(
+	station_code varchar(10) primary key,
+	station_name varchar(50)
+);
+--expriment end
+
+-- query to search the trains from one station to other:
+select t1.station_code, t1.train_no, t2.station_code from STATION as t1 cross join STATION as t2 where t1.station_code = 'CNB' and t2.station_code = 'PNBE' and t1.train_no = t2.train_no;
+
+
+-- query to search the trains from one station to other along with arrival time and departure time:
+select t1.station_code, t1.train_no, t2.station_code, t1.departure_t, t2.arrival_t from STATION as t1 cross join STATION as t2 where t1.station_code = 'CNB' and t2.station_code = 'PNBE' and t1.train_no = t2.train_no;
+
+
+
+-- query to search train with date support:
+select a.train_no,a.station_code, b.station_code,a.departure_t, b.arrival_t,"2022-10-28" as date from STATION as a, STATION as b, AVAILABLE as c where a.train_no=b.train_no and a.station_code="CNB" and b.station_code="PNBE" and c.train_no = a.train_no and c.week_day like '%4%';
+
